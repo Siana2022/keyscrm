@@ -26,6 +26,8 @@ export default async function EmpresaFichaPage({ params }: { params: Promise<{ i
     { data: revisiones },
     { data: plantillasAsignadas },
     { data: docsManuales },
+    { data: guias },
+    datosEmpresa,
   ] = await Promise.all([
     supabase.from('empleados').select('*').eq('empresa_id', id).eq('estado', 'active').order('nombre_completo'),
     supabase.from('v_encargados_por_empresa').select('*').eq('empresa_id', id).eq('estado', 'active'),
@@ -33,11 +35,13 @@ export default async function EmpresaFichaPage({ params }: { params: Promise<{ i
     supabase.from('revisiones').select('*').eq('empresa_id', id).order('fecha', { ascending: false }),
     supabase.from('empresa_plantilla').select('*, plantillas_documento(*)').eq('empresa_id', id).eq('estado', 'active'),
     supabase.from('documentos_manuales').select('*').eq('empresa_id', id).order('categoria'),
+    supabase.from('guias').select('*').eq('activo', true).order('tipo').order('orden'),
+    supabase.from('empresas').select('*').eq('id', id).single(),
   ])
 
-  // Datos de empresa para mostrar
-  const datosEmpresa = await supabase.from('empresas').select('*').eq('id', id).single()
   const emp = datosEmpresa.data
+  const guiasDataManager = (guias ?? []).filter(g => g.tipo === 'data_manager')
+  const guiasUsuario = (guias ?? []).filter(g => g.tipo === 'usuario')
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a' }}>
@@ -197,52 +201,32 @@ export default async function EmpresaFichaPage({ params }: { params: Promise<{ i
           docsManuales={docsManuales ?? []}
         />
 
-        {/* MANUALES */}
-        <div className="mt-8">
-          <h2 className="text-center text-white text-xl font-bold uppercase tracking-wide py-4" style={{ backgroundColor: '#111' }}>
-            MANUALES PARA EL DATA MANAGER
-          </h2>
-          <div className="space-y-3 py-4" style={{ backgroundColor: '#222' }}>
-            {[
-              { img: '/keys/manual-m1.jpeg', cod: 'M1', titulo: 'Guía para el Data Manager' },
-              { img: '/keys/manual-m2.jpeg', cod: 'M2', titulo: 'Cómo crear y gestionar usuarios' },
-              { img: '/keys/manual-m3.jpeg', cod: 'M3', titulo: 'Uso correcto de los equipos' },
-            ].map(m => (
-              <div key={m.cod} className="flex items-center gap-4 px-6 py-3">
-                <Image src={m.img} alt={m.titulo} width={100} height={56} className="rounded object-cover flex-shrink-0" />
-                <div className="flex items-center gap-3">
-                  <Image src="/keys/manual-icon.jpeg" alt="" width={32} height={32} className="rounded-full object-cover" />
-                  <p className="text-white text-sm">
-                    <span style={{ color: '#FF2F92', fontWeight: 'bold', marginRight: '12px' }}>{m.cod}</span>
-                    {m.titulo}
-                  </p>
-                </div>
-              </div>
-            ))}
+        {/* MANUALES — cargados dinámicamente desde la BD */}
+        {guiasDataManager.length > 0 && (
+          <div className="mt-8">
+            <h2 className="text-center text-white text-xl font-bold uppercase tracking-wide py-4" style={{ backgroundColor: '#111' }}>
+              MANUALES PARA EL DATA MANAGER
+            </h2>
+            <div className="space-y-3 py-4" style={{ backgroundColor: '#222' }}>
+              {guiasDataManager.map((g, i) => (
+                <FilaGuia key={g.id} guia={g} imgFallback={`/keys/manual-m${i + 1}.jpeg`} />
+              ))}
+            </div>
           </div>
+        )}
 
-          <h2 className="text-center text-white text-xl font-bold uppercase tracking-wide py-4 mt-4" style={{ backgroundColor: '#111' }}>
-            MANUALES PARA USUARIOS
-          </h2>
-          <div className="space-y-3 py-4" style={{ backgroundColor: '#222' }}>
-            {[
-              { img: '/keys/manual-m4.jpeg', cod: 'M4', titulo: 'Manual del usuario' },
-              { img: '/keys/manual-m5.jpeg', cod: 'M5', titulo: 'Guía de buenas prácticas' },
-              { img: '/keys/manual-m6.jpeg', cod: 'M6', titulo: 'Manual de seguridad' },
-            ].map(m => (
-              <div key={m.cod} className="flex items-center gap-4 px-6 py-3">
-                <Image src={m.img} alt={m.titulo} width={100} height={56} className="rounded object-cover flex-shrink-0" />
-                <div className="flex items-center gap-3">
-                  <Image src="/keys/manual-icon.jpeg" alt="" width={32} height={32} className="rounded-full object-cover" />
-                  <p className="text-white text-sm">
-                    <span style={{ color: '#FF2F92', fontWeight: 'bold', marginRight: '12px' }}>{m.cod}</span>
-                    {m.titulo}
-                  </p>
-                </div>
-              </div>
-            ))}
+        {guiasUsuario.length > 0 && (
+          <div className="mt-4">
+            <h2 className="text-center text-white text-xl font-bold uppercase tracking-wide py-4" style={{ backgroundColor: '#111' }}>
+              MANUALES PARA USUARIOS
+            </h2>
+            <div className="space-y-3 py-4" style={{ backgroundColor: '#222' }}>
+              {guiasUsuario.map((g, i) => (
+                <FilaGuia key={g.id} guia={g} imgFallback={`/keys/manual-m${guiasDataManager.length + i + 1}.jpeg`} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* FOOTER */}
         <div className="mt-8">
@@ -280,6 +264,31 @@ function Campo({ label, valor }: { label: string; valor: string | null | undefin
       <p className="text-white text-sm">{valor || '—'}</p>
     </div>
   )
+}
+
+function FilaGuia({ guia, imgFallback }: { guia: { id: string; codigo: string; titulo: string; imagen_url: string | null; archivo_url: string | null }; imgFallback: string }) {
+  const imgSrc = guia.imagen_url || imgFallback
+  const contenido = (
+    <div className="flex items-center gap-4 px-6 py-3">
+      <Image src={imgSrc} alt={guia.titulo} width={100} height={56} className="rounded object-cover flex-shrink-0" />
+      <div className="flex items-center gap-3">
+        <Image src="/keys/manual-icon.jpeg" alt="" width={32} height={32} className="rounded-full object-cover" />
+        <p className="text-white text-sm">
+          <span style={{ color: '#FF2F92', fontWeight: 'bold', marginRight: '12px' }}>{guia.codigo}</span>
+          {guia.titulo}
+        </p>
+      </div>
+    </div>
+  )
+
+  if (guia.archivo_url) {
+    return (
+      <a href={guia.archivo_url} target="_blank" rel="noopener noreferrer" className="block hover:opacity-80 transition-opacity">
+        {contenido}
+      </a>
+    )
+  }
+  return <div>{contenido}</div>
 }
 
 function FormAltaEmpleado({ empresaId }: { empresaId: string }) {

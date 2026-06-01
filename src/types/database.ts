@@ -279,6 +279,40 @@ export interface Database {
         Update: Partial<Omit<NotificacionRow, 'id' | 'created_at' | 'updated_at'>>
         Relationships: []
       }
+      guias: {
+        Row: {
+          id: string
+          codigo: string
+          titulo: string
+          tipo: 'data_manager' | 'usuario'
+          archivo_url: string | null
+          imagen_url: string | null
+          orden: number
+          activo: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          codigo: string
+          titulo: string
+          tipo: 'data_manager' | 'usuario'
+          archivo_url?: string | null
+          imagen_url?: string | null
+          orden?: number
+          activo?: boolean
+        }
+        Update: Partial<{
+          codigo: string
+          titulo: string
+          tipo: 'data_manager' | 'usuario'
+          archivo_url: string | null
+          imagen_url: string | null
+          orden: number
+          activo: boolean
+        }>
+        Relationships: []
+      }
       documentos_manuales: {
         Row: DocumentoManualRow
         Insert: Omit<DocumentoManualRow, 'id' | 'created_at' | 'updated_at'> & { id?: string }
