@@ -75,7 +75,7 @@ export default async function EmpresaAdminPage({ params }: { params: Promise<{ i
   const dpoAsignado = dpos?.find(d => d.id === empresa.dpo_id)
 
   return (
-    <div className="max-w-7xl">
+    <div className="w-full">
       {/* Cabecera */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -99,7 +99,7 @@ export default async function EmpresaAdminPage({ params }: { params: Promise<{ i
       </div>
 
       {/* Layout dos columnas */}
-      <div className="grid grid-cols-[360px_1fr] gap-6 items-start">
+      <div className="grid grid-cols-2 gap-6 items-start">
 
         {/* Columna izquierda — Datos de la empresa */}
         <div className="sticky top-6 space-y-4">
