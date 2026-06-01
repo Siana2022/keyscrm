@@ -30,16 +30,16 @@ export default function SeccionDocumentos({
         if (!plantillas.length && !manuales.length) return null
 
         return (
-          <div key={tipo} className="border-b border-gray-700">
-            <div className="px-6 py-3" style={{ backgroundColor: '#2a2a2a' }}>
+          <div key={tipo} className="border-b border-gray-200">
+            <div className="px-6 py-3 bg-gray-50">
               <p className="text-sm font-bold uppercase tracking-wide" style={{ color: '#FF2F92' }}>
                 {TIPO_DOCUMENTO_LABELS[tipo]}
               </p>
             </div>
-            <div className="px-6 py-3 space-y-2" style={{ backgroundColor: '#1e1e1e' }}>
+            <div className="px-6 py-3 space-y-2 bg-white">
               {plantillas.map((p: any) => (
                 <div key={p.id} className="flex items-center justify-between">
-                  <span className="text-white text-sm">{p.plantillas_documento?.titulo}</span>
+                  <span className="text-gray-900 text-sm">{p.plantillas_documento?.titulo}</span>
                   <button
                     onClick={() => window.open(`/api/pdf/${empresaId}/${p.plantilla_id}`, '_blank')}
                     className="text-xs text-white px-3 py-1 rounded"
@@ -51,12 +51,12 @@ export default function SeccionDocumentos({
               ))}
               {manuales.map((d: any) => (
                 <div key={d.id} className="flex items-center justify-between">
-                  <span className="text-white text-sm">{d.nombre}</span>
+                  <span className="text-gray-900 text-sm">{d.nombre}</span>
                   <a
                     href={d.archivo_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs text-white px-3 py-1 rounded"
+                    className="text-xs text-gray-900 px-3 py-1 rounded"
                     style={{ backgroundColor: '#555' }}
                   >
                     Descargar

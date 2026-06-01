@@ -19,10 +19,10 @@ export default function TablaEmpleados({ empleados, empresaId }: { empleados: Em
   return (
     <div className="space-y-2">
       {lista.map(emp => (
-        <div key={emp.id} className="flex items-center justify-between py-2 border-b border-gray-700 last:border-0">
+        <div key={emp.id} className="flex items-center justify-between py-2 border-b border-gray-200 last:border-0">
           <div>
-            <p className="text-white text-sm font-medium">{emp.nombre_completo}</p>
-            <p className="text-gray-400 text-xs">{emp.cargo ?? '—'} · DNI: {emp.dni ?? '—'}{emp.teletrabajo ? ' · Teletrabajo' : ''}</p>
+            <p className="text-gray-900 text-sm font-medium">{emp.nombre_completo}</p>
+            <p className="text-gray-500 text-xs">{emp.cargo ?? '—'} · DNI: {emp.dni ?? '—'}{emp.teletrabajo ? ' · Teletrabajo' : ''}</p>
           </div>
           <button
             onClick={() => solicitarBaja(emp.id, emp.nombre_completo)}

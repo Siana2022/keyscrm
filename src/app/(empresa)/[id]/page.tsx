@@ -44,7 +44,7 @@ export default async function EmpresaFichaPage({ params }: { params: Promise<{ i
   const guiasUsuario = (guias ?? []).filter(g => g.tipo === 'usuario')
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#1a1a1a' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#f5f5f5' }}>
 
       {/* ── HEADER ── */}
       <div className="flex items-center justify-between px-8 py-4" style={{ backgroundColor: '#111' }}>
@@ -69,7 +69,7 @@ export default async function EmpresaFichaPage({ params }: { params: Promise<{ i
       <div className="text-center py-6" style={{ backgroundColor: '#111' }}>
         <h1 className="text-white text-2xl font-bold tracking-wide uppercase">{empresa.razon_social}</h1>
         {emp && (
-          <div className="text-gray-400 text-sm mt-2 space-y-0.5">
+          <div className="text-gray-500 text-sm mt-2 space-y-0.5">
             {emp.cifdni && <p>{emp.cifdni}</p>}
             {emp.direccion_fiscal && <p>{emp.direccion_fiscal}</p>}
             {emp.localidad && emp.provincia && <p>{emp.localidad} · {emp.provincia}</p>}
@@ -82,8 +82,8 @@ export default async function EmpresaFichaPage({ params }: { params: Promise<{ i
 
         {/* DATA MANAGER */}
         <SeccionBarra titulo="DATA MANAGER" />
-        <div className="px-6 py-5" style={{ backgroundColor: '#222' }}>
-          <p className="text-gray-400 text-sm mb-4">
+        <div className="px-6 py-5" style={{ backgroundColor: '#ffffff' }}>
+          <p className="text-gray-500 text-sm mb-4">
             El Data Manager es la persona encargada para supervisar que todas las tareas necesarias se lleven a cabo correctamente.
           </p>
           {emp && (
@@ -97,7 +97,7 @@ export default async function EmpresaFichaPage({ params }: { params: Promise<{ i
 
         {/* DPO */}
         <SeccionBarra titulo="DPO" />
-        <div className="px-6 py-5" style={{ backgroundColor: '#222' }}>
+        <div className="px-6 py-5" style={{ backgroundColor: '#ffffff' }}>
           {empresa.dpo_nombre ? (
             <div className="grid grid-cols-2 gap-4 text-sm">
               <Campo label="Nombre" valor={empresa.dpo_nombre} />
@@ -110,8 +110,8 @@ export default async function EmpresaFichaPage({ params }: { params: Promise<{ i
 
         {/* USUARIOS */}
         <SeccionIcono src="/keys/icon-usuarios.png" titulo="USUARIOS" />
-        <div className="px-6 py-3" style={{ backgroundColor: '#222' }}>
-          <p className="text-gray-400 text-sm mb-4">
+        <div className="px-6 py-3" style={{ backgroundColor: '#ffffff' }}>
+          <p className="text-gray-500 text-sm mb-4">
             Recuerda que se consideran usuarios todo aquel personal interno de la empresa que tenga acceso a datos de carácter personal.
           </p>
         </div>
@@ -124,8 +124,8 @@ export default async function EmpresaFichaPage({ params }: { params: Promise<{ i
 
         {/* SERVICIOS EXTERNOS */}
         <SeccionIcono src="/keys/icon-servext.png" titulo="SERVICIOS EXTERNOS" />
-        <div className="px-6 py-3" style={{ backgroundColor: '#222' }}>
-          <p className="text-gray-400 text-sm mb-4">
+        <div className="px-6 py-3" style={{ backgroundColor: '#ffffff' }}>
+          <p className="text-gray-500 text-sm mb-4">
             Recuerda que únicamente debemos registrar los servicios externos que tengan acceso a datos de carácter personal de la empresa.
           </p>
         </div>
@@ -138,8 +138,8 @@ export default async function EmpresaFichaPage({ params }: { params: Promise<{ i
 
         {/* EQUIPOS */}
         <SeccionIcono src="/keys/icon-equipos.png" titulo="EQUIPOS" />
-        <div className="px-6 py-3" style={{ backgroundColor: '#222' }}>
-          <p className="text-gray-400 text-sm mb-4">
+        <div className="px-6 py-3" style={{ backgroundColor: '#ffffff' }}>
+          <p className="text-gray-500 text-sm mb-4">
             Recuerda que únicamente debemos registrar los equipos que almacenen o traten datos de carácter personal.
           </p>
         </div>
@@ -152,9 +152,9 @@ export default async function EmpresaFichaPage({ params }: { params: Promise<{ i
 
         {/* REGISTROS */}
         <SeccionBarra titulo="REGISTROS" />
-        <div className="flex flex-col" style={{ backgroundColor: '#222' }}>
+        <div className="flex flex-col" style={{ backgroundColor: '#ffffff' }}>
           {/* Revisión trimestral */}
-          <div className="flex gap-4 p-5 border-b border-gray-700">
+          <div className="flex gap-4 p-5 border-b border-gray-200">
             <Image src="/keys/revision-trimestral.webp" alt="Revisión" width={80} height={80} className="object-contain flex-shrink-0" />
             <div className="flex-1">
               <SeccionAccordion titulo="Revisiones trimestrales" colorTitulo="#FF2F92" compact>
@@ -189,10 +189,10 @@ export default async function EmpresaFichaPage({ params }: { params: Promise<{ i
         </div>
 
         {/* DOCUMENTOS */}
-        <div className="flex items-center justify-center gap-6 py-6 mt-4" style={{ backgroundColor: '#111' }}>
-          <Image src="/keys/deco-left.png" alt="" width={120} height={85} className="object-contain opacity-60" />
-          <h2 className="text-white text-3xl font-bold tracking-widest uppercase">DOCUMENTOS</h2>
-          <Image src="/keys/deco-right.png" alt="" width={120} height={85} className="object-contain opacity-60" />
+        <div className="flex items-center justify-center gap-6 py-6 mt-4 border-t border-b border-gray-200 bg-white">
+          <Image src="/keys/deco-left.png" alt="" width={120} height={85} className="object-contain opacity-40" />
+          <h2 className="text-gray-800 text-3xl font-bold tracking-widest uppercase">DOCUMENTOS</h2>
+          <Image src="/keys/deco-right.png" alt="" width={120} height={85} className="object-contain opacity-40" />
         </div>
 
         <SeccionDocumentos
@@ -204,10 +204,10 @@ export default async function EmpresaFichaPage({ params }: { params: Promise<{ i
         {/* MANUALES — cargados dinámicamente desde la BD */}
         {guiasDataManager.length > 0 && (
           <div className="mt-8">
-            <h2 className="text-center text-white text-xl font-bold uppercase tracking-wide py-4" style={{ backgroundColor: '#111' }}>
+            <h2 className="text-center text-gray-800 text-xl font-bold uppercase tracking-wide py-4 border-t border-b border-gray-200">
               MANUALES PARA EL DATA MANAGER
             </h2>
-            <div className="space-y-3 py-4" style={{ backgroundColor: '#222' }}>
+            <div className="space-y-3 py-4 bg-white">
               {guiasDataManager.map((g, i) => (
                 <FilaGuia key={g.id} guia={g} imgFallback={`/keys/manual-m${i + 1}.jpeg`} />
               ))}
@@ -217,21 +217,16 @@ export default async function EmpresaFichaPage({ params }: { params: Promise<{ i
 
         {guiasUsuario.length > 0 && (
           <div className="mt-4">
-            <h2 className="text-center text-white text-xl font-bold uppercase tracking-wide py-4" style={{ backgroundColor: '#111' }}>
+            <h2 className="text-center text-gray-800 text-xl font-bold uppercase tracking-wide py-4 border-t border-b border-gray-200">
               MANUALES PARA USUARIOS
             </h2>
-            <div className="space-y-3 py-4" style={{ backgroundColor: '#222' }}>
+            <div className="space-y-3 py-4 bg-white">
               {guiasUsuario.map((g, i) => (
                 <FilaGuia key={g.id} guia={g} imgFallback={`/keys/manual-m${guiasDataManager.length + i + 1}.jpeg`} />
               ))}
             </div>
           </div>
         )}
-
-        {/* FOOTER */}
-        <div className="mt-8">
-          <Image src="/keys/footer.png" alt="Keys Safe" width={1200} height={395} className="w-full object-contain" />
-        </div>
 
       </div>
     </div>
@@ -242,17 +237,17 @@ export default async function EmpresaFichaPage({ params }: { params: Promise<{ i
 
 function SeccionBarra({ titulo }: { titulo: string }) {
   return (
-    <div className="flex items-center px-6 py-3 mt-4" style={{ backgroundColor: 'rgba(122,122,122,0.37)' }}>
-      <h2 className="text-white font-bold text-sm uppercase tracking-widest">{titulo}</h2>
+    <div className="flex items-center px-4 py-2 mt-4 rounded" style={{ backgroundColor: 'rgba(180,180,180,0.25)' }}>
+      <h2 className="text-gray-700 font-bold text-sm uppercase tracking-widest">{titulo}</h2>
     </div>
   )
 }
 
 function SeccionIcono({ src, titulo }: { src: string; titulo: string }) {
   return (
-    <div className="flex items-center gap-3 px-6 py-3 mt-4" style={{ backgroundColor: 'rgba(122,122,122,0.37)' }}>
-      <Image src={src} alt={titulo} width={32} height={32} className="object-contain" />
-      <h2 className="text-white font-bold text-sm uppercase tracking-widest">{titulo}</h2>
+    <div className="flex items-center gap-3 px-4 py-2 mt-4 rounded" style={{ backgroundColor: 'rgba(180,180,180,0.25)' }}>
+      <Image src={src} alt={titulo} width={28} height={28} className="object-contain" />
+      <h2 className="text-gray-700 font-bold text-sm uppercase tracking-widest">{titulo}</h2>
     </div>
   )
 }
@@ -261,7 +256,7 @@ function Campo({ label, valor }: { label: string; valor: string | null | undefin
   return (
     <div>
       <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">{label}</p>
-      <p className="text-white text-sm">{valor || '—'}</p>
+      <p className="text-gray-900 text-sm">{valor || '—'}</p>
     </div>
   )
 }
@@ -273,7 +268,7 @@ function FilaGuia({ guia, imgFallback }: { guia: { id: string; codigo: string; t
       <Image src={imgSrc} alt={guia.titulo} width={100} height={56} className="rounded object-cover flex-shrink-0" />
       <div className="flex items-center gap-3">
         <Image src="/keys/manual-icon.jpeg" alt="" width={32} height={32} className="rounded-full object-cover" />
-        <p className="text-white text-sm">
+        <p className="text-gray-800 text-sm">
           <span style={{ color: '#FF2F92', fontWeight: 'bold', marginRight: '12px' }}>{guia.codigo}</span>
           {guia.titulo}
         </p>

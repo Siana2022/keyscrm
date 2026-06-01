@@ -16,11 +16,11 @@ export default function SeccionAccordion({
   const [open, setOpen] = useState(false)
 
   return (
-    <div className="border-b border-gray-700">
+    <div className="border-b border-gray-200">
       <button
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-6 py-3 text-left transition-colors hover:opacity-90"
-        style={{ backgroundColor: open ? 'rgba(255,47,146,0.15)' : '#2a2a2a' }}
+        style={{ backgroundColor: open ? 'rgba(255,47,146,0.08)' : '#f9f9f9' }}
       >
         <span className="text-sm font-semibold uppercase tracking-wide" style={{ color: colorTitulo }}>
           {titulo}
@@ -34,7 +34,7 @@ export default function SeccionAccordion({
         </svg>
       </button>
       {open && (
-        <div className={`${compact ? 'px-4 py-3' : 'px-6 py-5'}`} style={{ backgroundColor: '#1e1e1e' }}>
+        <div className={`${compact ? 'px-4 py-3' : 'px-6 py-5'} bg-white`}>
           {children}
         </div>
       )}
