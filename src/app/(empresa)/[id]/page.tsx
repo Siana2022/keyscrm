@@ -148,9 +148,9 @@ export default async function EmpresaFichaPage({ params }: { params: Promise<{ i
 
         {/* REGISTROS */}
         <SeccionBarra titulo="REGISTROS" />
-        <div className="grid grid-cols-2 gap-0" style={{ backgroundColor: '#222' }}>
+        <div className="flex flex-col" style={{ backgroundColor: '#222' }}>
           {/* Revisión trimestral */}
-          <div className="flex gap-4 p-5 border-r border-gray-700">
+          <div className="flex gap-4 p-5 border-b border-gray-700">
             <Image src="/keys/revision-trimestral.webp" alt="Revisión" width={80} height={80} className="object-contain flex-shrink-0" />
             <div className="flex-1">
               <SeccionAccordion titulo="Revisiones trimestrales" colorTitulo="#FF2F92" compact>
