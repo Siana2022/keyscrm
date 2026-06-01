@@ -58,8 +58,12 @@ export default function EmpresaForm({
       setError(err.error ?? 'Error al guardar')
       return
     }
-    router.push('/dashboard')
-    router.refresh()
+    const result = await res.json()
+    if (isEdit) {
+      router.refresh()
+    } else {
+      router.push(`/dashboard/empresas/${result.id}`)
+    }
   }
 
   const field = (key: keyof Empresa) => empresa?.[key] as string ?? ''
