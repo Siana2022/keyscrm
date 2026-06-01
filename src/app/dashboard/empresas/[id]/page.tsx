@@ -72,8 +72,10 @@ export default async function EmpresaAdminPage({ params }: { params: Promise<{ i
 
   const plantillasActivas = (todasPlantillas ?? []).filter(p => p.activo)
 
+  const dpoAsignado = dpos?.find(d => d.id === empresa.dpo_id)
+
   return (
-    <div className="space-y-3 max-w-4xl">
+    <div className="max-w-7xl">
       {/* Cabecera */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -90,82 +92,68 @@ export default async function EmpresaAdminPage({ params }: { params: Promise<{ i
           >
             Ver ficha empresa
           </Link>
-          <Link
-            href="/dashboard"
-            className="text-sm text-gray-600 hover:text-gray-900"
-          >
+          <Link href="/dashboard" className="text-sm text-gray-600 hover:text-gray-900">
             ← Volver
           </Link>
         </div>
       </div>
 
-      {/* Datos empresa */}
-      <AdminSection title="Datos de la empresa" defaultOpen={true}>
-        <EmpresaForm empresa={empresa} dpos={dpos ?? []} />
-      </AdminSection>
+      {/* Layout dos columnas */}
+      <div className="grid grid-cols-[360px_1fr] gap-6 items-start">
 
-      {/* Empleados */}
-      <AdminSection title={`Empleados (${empleados?.length ?? 0})`}>
-        <EmpleadosAdmin
-          empresaId={id}
-          empleadosIniciales={empleados ?? []}
-        />
-      </AdminSection>
+        {/* Columna izquierda — Datos de la empresa */}
+        <div className="sticky top-6 space-y-4">
+          <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <div className="px-5 py-3 border-b border-gray-100 bg-gray-50">
+              <h2 className="text-sm font-semibold text-gray-700">Datos de la empresa</h2>
+            </div>
+            <div className="p-5">
+              <EmpresaForm empresa={empresa} dpos={dpos ?? []} />
+            </div>
+          </div>
 
-      {/* Encargados de tratamiento */}
-      <AdminSection title={`Encargados de tratamiento (${encargadosVinculados?.length ?? 0})`}>
-        <EncargadosAdmin
-          empresaId={id}
-          encargadosIniciales={encargadosAdaptados}
-        />
-      </AdminSection>
-
-      {/* Equipos */}
-      <AdminSection title={`Equipos (${equipos?.length ?? 0})`}>
-        <EquiposAdmin
-          empresaId={id}
-          equiposIniciales={equipos ?? []}
-        />
-      </AdminSection>
-
-      {/* DPO */}
-      <AdminSection title="DPO asignado">
-        <div className="space-y-2">
-          {empresa.dpo_id ? (
-            (() => {
-              const dpo = dpos?.find(d => d.id === empresa.dpo_id)
-              return dpo ? (
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-xs font-medium">
-                    {dpo.nombre.charAt(0).toUpperCase()}
-                  </div>
-                  <span className="text-sm text-gray-800 font-medium">{dpo.nombre}</span>
+          {/* DPO asignado */}
+          {dpoAsignado && (
+            <div className="bg-white rounded-xl border border-gray-200 p-4">
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">DPO asignado</p>
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-xs font-semibold">
+                  {dpoAsignado.nombre.charAt(0).toUpperCase()}
                 </div>
-              ) : <p className="text-sm text-gray-400">DPO no encontrado</p>
-            })()
-          ) : (
-            <p className="text-sm text-gray-400">Sin DPO asignado. Asigna uno en &quot;Datos de la empresa&quot;.</p>
+                <span className="text-sm font-medium text-gray-800">{dpoAsignado.nombre}</span>
+              </div>
+            </div>
           )}
         </div>
-      </AdminSection>
 
-      {/* Revisiones y auditorías */}
-      <AdminSection title={`Revisiones y auditorías (${revisiones?.length ?? 0})`}>
-        <RevisionesAdmin
-          empresaId={id}
-          revisionesIniciales={revisiones ?? []}
-        />
-      </AdminSection>
+        {/* Columna derecha — Secciones */}
+        <div className="space-y-3">
+          <AdminSection title={`Empleados (${empleados?.length ?? 0})`}>
+            <EmpleadosAdmin empresaId={id} empleadosIniciales={empleados ?? []} />
+          </AdminSection>
 
-      {/* Plantillas por categoría */}
-      <AdminSection title="Documentos y plantillas">
-        <PlantillasEmpresaAdmin
-          empresaId={id}
-          plantillasAsignadas={plantillasConJoin}
-          todasPlantillas={plantillasActivas}
-          documentosManuales={documentosManuales ?? []}
-        />
-      </AdminSection>
+          <AdminSection title={`Encargados de tratamiento (${encargadosVinculados?.length ?? 0})`}>
+            <EncargadosAdmin empresaId={id} encargadosIniciales={encargadosAdaptados} />
+          </AdminSection>
+
+          <AdminSection title={`Equipos (${equipos?.length ?? 0})`}>
+            <EquiposAdmin empresaId={id} equiposIniciales={equipos ?? []} />
+          </AdminSection>
+
+          <AdminSection title={`Revisiones y auditorías (${revisiones?.length ?? 0})`}>
+            <RevisionesAdmin empresaId={id} revisionesIniciales={revisiones ?? []} />
+          </AdminSection>
+
+          <AdminSection title="Documentos y plantillas">
+            <PlantillasEmpresaAdmin
+              empresaId={id}
+              plantillasAsignadas={plantillasConJoin}
+              todasPlantillas={plantillasActivas}
+              documentosManuales={documentosManuales ?? []}
+            />
+          </AdminSection>
+        </div>
+      </div>
     </div>
   )
 }
