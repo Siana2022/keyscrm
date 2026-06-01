@@ -37,6 +37,9 @@ export default function EmpresaForm({
       email_principal: data.email_principal || null,
       email_data_manager: data.email_data_manager || null,
       nombre_pila_data_manager: data.nombre_pila_data_manager || null,
+      nombre_data_manager: data.nombre_data_manager || null,
+      apellidos_data_manager: data.apellidos_data_manager || null,
+      dni_data_manager: data.dni_data_manager || null,
       pagina_web: data.pagina_web || null,
       lssi_datos_registrales: data.lssi_datos_registrales || null,
       grupo_de_empresas: data.grupo_de_empresas || null,
@@ -117,9 +120,20 @@ export default function EmpresaForm({
       </div>
 
       <div className="border-t border-gray-100 pt-5">
-        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-4">Responsable de datos</p>
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Nombre del responsable" name="nombre_pila_data_manager">
+        <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-4">Data Manager (Responsable de datos)</p>
+        <div className="grid grid-cols-3 gap-4">
+          <Field label="Nombre" name="nombre_data_manager">
+            <input name="nombre_data_manager" defaultValue={field('nombre_data_manager')} className="input" />
+          </Field>
+          <Field label="Apellidos" name="apellidos_data_manager">
+            <input name="apellidos_data_manager" defaultValue={field('apellidos_data_manager')} className="input" />
+          </Field>
+          <Field label="DNI" name="dni_data_manager">
+            <input name="dni_data_manager" defaultValue={field('dni_data_manager')} className="input" />
+          </Field>
+        </div>
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          <Field label="Nombre de pila (para documentos)" name="nombre_pila_data_manager">
             <input name="nombre_pila_data_manager" defaultValue={field('nombre_pila_data_manager')} className="input" />
           </Field>
           <Field label="Email del responsable" name="email_data_manager">
