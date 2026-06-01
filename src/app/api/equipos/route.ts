@@ -19,7 +19,7 @@ export async function POST(request: Request) {
       empresa_id,
       tipo_de_equipo,
       codigo_del_equipo: codigo_del_equipo || null,
-      responsable: responsable || null,
+      responsable_del_equipo: responsable || null,
       estado: 'pending',
     })
     .select()

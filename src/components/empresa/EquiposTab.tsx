@@ -35,7 +35,7 @@ export default function EquiposTab({
               <div>
                 <p className="text-sm font-medium text-gray-900">{equipo.tipo_de_equipo}</p>
                 <p className="text-xs text-gray-500">
-                  Código: {equipo.codigo_del_equipo ?? '—'} · Responsable: {equipo.responsable ?? '—'}
+                  Código: {equipo.codigo_del_equipo ?? '—'} · Responsable: {equipo.responsable_del_equipo ?? '—'}
                 </p>
               </div>
               <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${ESTADO_COLORS[equipo.estado]}`}>

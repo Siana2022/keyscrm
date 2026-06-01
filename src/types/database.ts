@@ -37,8 +37,14 @@ type EmpresaRow = {
   email_data_manager: string | null
   nombre_pila_data_manager: string | null
   pagina_web: string | null
+  web_2: string | null
+  web_3: string | null
+  web_4: string | null
   lssi_datos_registrales: string | null
   grupo_de_empresas: string | null
+  nombre_data_manager: string | null
+  apellidos_data_manager: string | null
+  dni_data_manager: string | null
   dpo_id: string | null
   created_at: string
   updated_at: string
@@ -85,6 +91,7 @@ type PlantillaRow = {
   contenido: string
   tipo: TipoDocumento
   activo: boolean
+  variables: string[] | null
   created_at: string
   updated_at: string
 }
@@ -124,7 +131,8 @@ type EquipoRow = {
   empresa_id: string
   tipo_de_equipo: string
   codigo_del_equipo: string | null
-  responsable: string | null
+  responsable_del_equipo: string | null
+  otro: string | null
   estado: EstadoRegistro
   created_at: string
   updated_at: string
@@ -135,7 +143,9 @@ type RevisionRow = {
   empresa_id: string
   fecha: string
   tipo: TipoAuditoria
+  tipo_de_revision: string | null
   notas: string | null
+  estado_resultado: string | null
   created_at: string
   updated_at: string
 }
@@ -154,6 +164,16 @@ type UsuarioEmpresaRow = {
   usuario_id: string
   empresa_id: string
   created_at: string
+}
+
+type DocumentoManualRow = {
+  id: string
+  empresa_id: string
+  categoria: TipoDocumento
+  nombre: string
+  archivo_url: string
+  created_at: string
+  updated_at: string
 }
 
 type NotificacionRow = {
@@ -231,7 +251,7 @@ export interface Database {
       }
       equipos: {
         Row: EquipoRow
-        Insert: Omit<EquipoRow, 'id' | 'created_at' | 'updated_at'> & { id?: string }
+        Insert: Omit<EquipoRow, 'id' | 'created_at' | 'updated_at' | 'otro'> & { id?: string; otro?: string | null }
         Update: Partial<Omit<EquipoRow, 'id' | 'created_at' | 'updated_at'>>
         Relationships: [{ foreignKeyName: 'equipos_empresa_id_fkey'; columns: ['empresa_id']; referencedRelation: 'empresas'; referencedColumns: ['id'] }]
       }
@@ -258,6 +278,12 @@ export interface Database {
         Insert: Partial<Omit<NotificacionRow, "id" | "created_at" | "updated_at">> & { id?: string; tipo: TipoNotificacion; empresa_id: string; payload: Record<string, unknown> }
         Update: Partial<Omit<NotificacionRow, 'id' | 'created_at' | 'updated_at'>>
         Relationships: []
+      }
+      documentos_manuales: {
+        Row: DocumentoManualRow
+        Insert: Omit<DocumentoManualRow, 'id' | 'created_at' | 'updated_at'> & { id?: string }
+        Update: Partial<Omit<DocumentoManualRow, 'id' | 'created_at' | 'updated_at'>>
+        Relationships: [{ foreignKeyName: 'documentos_manuales_empresa_id_fkey'; columns: ['empresa_id']; referencedRelation: 'empresas'; referencedColumns: ['id'] }]
       }
     }
     Views: {
