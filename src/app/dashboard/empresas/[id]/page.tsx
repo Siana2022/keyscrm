@@ -8,6 +8,7 @@ import EncargadosAdmin from '@/components/dashboard/EncargadosAdmin'
 import EquiposAdmin from '@/components/dashboard/EquiposAdmin'
 import RevisionesAdmin from '@/components/dashboard/RevisionesAdmin'
 import PlantillasEmpresaAdmin from '@/components/dashboard/PlantillasEmpresaAdmin'
+import AccesoEmpresa from '@/components/dashboard/AccesoEmpresa'
 import type { Database } from '@/types/database'
 
 type EmpresaPlantilla = Database['public']['Tables']['empresa_plantilla']['Row']
@@ -21,6 +22,7 @@ export default async function EmpresaAdminPage({ params }: { params: Promise<{ i
   const [
     { data: empresa },
     { data: dpos },
+    { data: usuariosAcceso },
     { data: empleados },
     { data: encargadosVinculados },
     { data: equipos },
@@ -31,6 +33,7 @@ export default async function EmpresaAdminPage({ params }: { params: Promise<{ i
   ] = await Promise.all([
     supabase.from('empresas').select('*').eq('id', id).single(),
     supabase.from('dpos').select('id, nombre').order('nombre'),
+    supabase.from('usuario_empresa').select('usuario_id, perfiles_usuario(id, email, rol)').eq('empresa_id', id),
     supabase.from('empleados').select('*').eq('empresa_id', id).order('nombre_completo'),
     supabase
       .from('v_encargados_por_empresa')
@@ -124,6 +127,12 @@ export default async function EmpresaAdminPage({ params }: { params: Promise<{ i
               </div>
             </div>
           )}
+
+          {/* Acceso de usuario */}
+          <AccesoEmpresa
+            empresaId={id}
+            usuariosAcceso={(usuariosAcceso ?? []) as any[]}
+          />
         </div>
 
         {/* Columna derecha — Secciones */}
