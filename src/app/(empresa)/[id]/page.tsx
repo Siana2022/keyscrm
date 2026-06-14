@@ -8,6 +8,9 @@ import TablaEncargados from '@/components/empresa/TablaEncargados'
 import TablaEquipos from '@/components/empresa/TablaEquipos'
 import TablaRevisiones from '@/components/empresa/TablaRevisiones'
 import SeccionDocumentos from '@/components/empresa/SeccionDocumentos'
+import FormAltaEmpleado from '@/components/empresa/FormAltaEmpleado'
+import FormAltaEncargado from '@/components/empresa/FormAltaEncargado'
+import FormAltaEquipo from '@/components/empresa/FormAltaEquipo'
 
 export default async function EmpresaFichaPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -286,64 +289,6 @@ function FilaGuia({ guia, imgFallback }: { guia: { id: string; codigo: string; t
   return <div>{contenido}</div>
 }
 
-function FormAltaEmpleado({ empresaId }: { empresaId: string }) {
-  return (
-    <form action="/api/empleados" method="POST" className="grid grid-cols-2 gap-3">
-      <input type="hidden" name="empresa_id" value={empresaId} />
-      <input name="nombre_completo" placeholder="Nombre completo *" required className="input-dark" />
-      <input name="dni" placeholder="DNI" className="input-dark" />
-      <input name="cargo" placeholder="Cargo" className="input-dark" />
-      <label className="flex items-center gap-2 text-gray-300 text-sm">
-        <input type="checkbox" name="teletrabajo" value="true" className="rounded" />
-        Teletrabajo
-      </label>
-      <div className="col-span-2">
-        <button type="submit" className="w-full py-2 text-sm font-bold text-white rounded" style={{ backgroundColor: '#FF2F92' }}>
-          AÑADIR USUARIO
-        </button>
-      </div>
-    </form>
-  )
-}
-
-function FormAltaEncargado({ empresaId }: { empresaId: string }) {
-  return (
-    <form action="/api/encargados" method="POST" className="grid grid-cols-2 gap-3">
-      <input type="hidden" name="empresa_id" value={empresaId} />
-      <input name="razon_social" placeholder="Razón social *" required className="input-dark" />
-      <input name="cif" placeholder="CIF" className="input-dark" />
-      <input name="nombre_del_servicio" placeholder="Nombre del servicio *" required className="input-dark col-span-2" />
-      <input name="direccion" placeholder="Dirección" className="input-dark" />
-      <input name="localidad" placeholder="Localidad" className="input-dark" />
-      <div className="col-span-2">
-        <button type="submit" className="w-full py-2 text-sm font-bold text-white rounded" style={{ backgroundColor: '#FF2F92' }}>
-          AÑADIR SERVICIO EXTERNO
-        </button>
-      </div>
-    </form>
-  )
-}
-
-function FormAltaEquipo({ empresaId }: { empresaId: string }) {
-  return (
-    <form action="/api/equipos" method="POST" className="grid grid-cols-2 gap-3">
-      <input type="hidden" name="empresa_id" value={empresaId} />
-      <select name="tipo_de_equipo" required className="input-dark col-span-2">
-        <option value="">Tipo de equipo *</option>
-        {['Ordenador Portátil','Ordenador Sobremesa','Móvil','Tablet','Servidor','Disco Duro','Otros'].map(t => (
-          <option key={t} value={t}>{t}</option>
-        ))}
-      </select>
-      <input name="codigo_del_equipo" placeholder="Código del equipo" className="input-dark" />
-      <input name="responsable" placeholder="Responsable" className="input-dark" />
-      <div className="col-span-2">
-        <button type="submit" className="w-full py-2 text-sm font-bold text-white rounded" style={{ backgroundColor: '#FF2F92' }}>
-          AÑADIR EQUIPO
-        </button>
-      </div>
-    </form>
-  )
-}
 
 function BotonAccion({ label, empresaId, accion, small }: { label: string; empresaId: string; accion: string; small?: boolean }) {
   return (
