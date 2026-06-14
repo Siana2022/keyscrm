@@ -4,6 +4,10 @@
   .input {
     @apply w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500;
   }
+
+  .input-dark {
+    @apply w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-pink-400;
+  }
 }
 
 :root {
