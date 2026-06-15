@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import type { Database, EstadoRegistro } from '@/types/database'
 
 type Encargado = Database['public']['Tables']['encargados_tratamiento']['Row']
 type EmpresaEncargado = Database['public']['Tables']['empresa_encargado']['Row']
+type Notificacion = Database['public']['Tables']['notificaciones_solicitudes']['Row']
 
 interface EncargadoConVinculo extends Encargado {
   empresa_encargado_id: string
@@ -14,6 +16,7 @@ interface EncargadoConVinculo extends Encargado {
 interface EncargadosAdminProps {
   empresaId: string
   encargadosIniciales: EncargadoConVinculo[]
+  notificaciones?: Notificacion[]
 }
 
 const ESTADOS: EstadoRegistro[] = ['active', 'pending', 'baja']
@@ -40,8 +43,9 @@ const emptyNuevo = {
   provincia: '',
 }
 
-export default function EncargadosAdmin({ empresaId, encargadosIniciales }: EncargadosAdminProps) {
+export default function EncargadosAdmin({ empresaId, encargadosIniciales, notificaciones = [] }: EncargadosAdminProps) {
   const [encargados, setEncargados] = useState<EncargadoConVinculo[]>(encargadosIniciales)
+  const router = useRouter()
   const [mode, setMode] = useState<Mode>('none')
   const [query, setQuery] = useState('')
   const [resultados, setResultados] = useState<Encargado[]>([])
@@ -49,6 +53,15 @@ export default function EncargadosAdmin({ empresaId, encargadosIniciales }: Enca
   const [nuevo, setNuevo] = useState(emptyNuevo)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  async function handleAprobar(notifId: string, accion: 'aprobar' | 'rechazar') {
+    await fetch('/api/admin/aprobar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notificacion_id: notifId, accion }),
+    })
+    router.refresh()
+  }
 
   const buscar = useCallback(async (q: string) => {
     if (!q.trim()) { setResultados([]); return }
@@ -254,6 +267,37 @@ export default function EncargadosAdmin({ empresaId, encargadosIniciales }: Enca
             </button>
           </div>
         </form>
+      )}
+
+      {notificaciones.length > 0 && (
+        <div className="border border-yellow-200 bg-yellow-50 rounded-lg overflow-hidden">
+          <p className="text-xs font-semibold text-yellow-800 px-3 py-2 border-b border-yellow-200 bg-yellow-100">
+            ⏳ Solicitudes pendientes de aprobación ({notificaciones.length})
+          </p>
+          <div className="divide-y divide-yellow-100">
+            {notificaciones.map(n => {
+              const p = n.payload as Record<string, string>
+              return (
+                <div key={n.id} className="flex items-center justify-between px-3 py-2">
+                  <div>
+                    <p className="text-sm text-gray-900 font-medium">{p.razon_social ?? '—'}</p>
+                    <p className="text-xs text-gray-500">{p.nombre_del_servicio ?? ''}{p.cif ? ` · CIF: ${p.cif}` : ''}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => handleAprobar(n.id, 'aprobar')}
+                      className="text-xs px-3 py-1 rounded-lg text-white font-medium bg-green-500 hover:bg-green-600">
+                      Aprobar
+                    </button>
+                    <button onClick={() => handleAprobar(n.id, 'rechazar')}
+                      className="text-xs px-3 py-1 rounded-lg text-white font-medium bg-red-500 hover:bg-red-600">
+                      Rechazar
+                    </button>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
       )}
 
       {encargados.length > 0 ? (

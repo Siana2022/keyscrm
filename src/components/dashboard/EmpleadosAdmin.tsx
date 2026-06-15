@@ -1,13 +1,16 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import type { Database, EstadoRegistro } from '@/types/database'
 
 type Empleado = Database['public']['Tables']['empleados']['Row']
+type Notificacion = Database['public']['Tables']['notificaciones_solicitudes']['Row']
 
 interface EmpleadosAdminProps {
   empresaId: string
   empleadosIniciales: Empleado[]
+  notificaciones?: Notificacion[]
 }
 
 const ESTADOS: EstadoRegistro[] = ['active', 'pending', 'baja']
@@ -30,8 +33,9 @@ const emptyForm = {
   estado: 'pending' as EstadoRegistro,
 }
 
-export default function EmpleadosAdmin({ empresaId, empleadosIniciales }: EmpleadosAdminProps) {
+export default function EmpleadosAdmin({ empresaId, empleadosIniciales, notificaciones = [] }: EmpleadosAdminProps) {
   const [empleados, setEmpleados] = useState<Empleado[]>(empleadosIniciales)
+  const router = useRouter()
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [form, setForm] = useState(emptyForm)
@@ -106,6 +110,15 @@ export default function EmpleadosAdmin({ empresaId, empleadosIniciales }: Emplea
     } finally {
       setSaving(false)
     }
+  }
+
+  async function handleAprobar(notifId: string, accion: 'aprobar' | 'rechazar') {
+    await fetch('/api/admin/aprobar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notificacion_id: notifId, accion }),
+    })
+    router.refresh()
   }
 
   async function handleEstado(emp: Empleado, estado: EstadoRegistro) {
@@ -206,6 +219,38 @@ export default function EmpleadosAdmin({ empresaId, empleadosIniciales }: Emplea
             </button>
           </div>
         </form>
+      )}
+
+      {/* Solicitudes pendientes de aprobación */}
+      {notificaciones.length > 0 && (
+        <div className="border border-yellow-200 bg-yellow-50 rounded-lg overflow-hidden">
+          <p className="text-xs font-semibold text-yellow-800 px-3 py-2 border-b border-yellow-200 bg-yellow-100">
+            ⏳ Solicitudes pendientes de aprobación ({notificaciones.length})
+          </p>
+          <div className="divide-y divide-yellow-100">
+            {notificaciones.map(n => {
+              const p = n.payload as Record<string, string>
+              return (
+                <div key={n.id} className="flex items-center justify-between px-3 py-2">
+                  <div>
+                    <p className="text-sm text-gray-900 font-medium">{p.nombre_completo ?? '—'}</p>
+                    <p className="text-xs text-gray-500">{p.cargo ?? ''}{p.dni ? ` · DNI: ${p.dni}` : ''}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => handleAprobar(n.id, 'aprobar')}
+                      className="text-xs px-3 py-1 rounded-lg text-white font-medium bg-green-500 hover:bg-green-600">
+                      Aprobar
+                    </button>
+                    <button onClick={() => handleAprobar(n.id, 'rechazar')}
+                      className="text-xs px-3 py-1 rounded-lg text-white font-medium bg-red-500 hover:bg-red-600">
+                      Rechazar
+                    </button>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
       )}
 
       {empleados.length > 0 ? (

@@ -1,9 +1,11 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import type { Database, EstadoRegistro } from '@/types/database'
 
 type Equipo = Database['public']['Tables']['equipos']['Row']
+type Notificacion = Database['public']['Tables']['notificaciones_solicitudes']['Row']
 
 const TIPOS_EQUIPO = [
   'Ordenador Portátil',
@@ -38,10 +40,12 @@ const emptyForm = {
 interface EquiposAdminProps {
   empresaId: string
   equiposIniciales: Equipo[]
+  notificaciones?: Notificacion[]
 }
 
-export default function EquiposAdmin({ empresaId, equiposIniciales }: EquiposAdminProps) {
+export default function EquiposAdmin({ empresaId, equiposIniciales, notificaciones = [] }: EquiposAdminProps) {
   const [equipos, setEquipos] = useState<Equipo[]>(equiposIniciales)
+  const router = useRouter()
   const [showForm, setShowForm] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [form, setForm] = useState(emptyForm)
@@ -116,6 +120,15 @@ export default function EquiposAdmin({ empresaId, equiposIniciales }: EquiposAdm
     } finally {
       setSaving(false)
     }
+  }
+
+  async function handleAprobar(notifId: string, accion: 'aprobar' | 'rechazar') {
+    await fetch('/api/admin/aprobar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ notificacion_id: notifId, accion }),
+    })
+    router.refresh()
   }
 
   async function cambiarEstado(id: string, estado: EstadoRegistro) {
@@ -195,6 +208,37 @@ export default function EquiposAdmin({ empresaId, equiposIniciales }: EquiposAdm
             </button>
           </div>
         </form>
+      )}
+
+      {notificaciones.length > 0 && (
+        <div className="border border-yellow-200 bg-yellow-50 rounded-lg overflow-hidden">
+          <p className="text-xs font-semibold text-yellow-800 px-3 py-2 border-b border-yellow-200 bg-yellow-100">
+            ⏳ Solicitudes pendientes de aprobación ({notificaciones.length})
+          </p>
+          <div className="divide-y divide-yellow-100">
+            {notificaciones.map(n => {
+              const p = n.payload as Record<string, string>
+              return (
+                <div key={n.id} className="flex items-center justify-between px-3 py-2">
+                  <div>
+                    <p className="text-sm text-gray-900 font-medium">{p.tipo_de_equipo ?? '—'}</p>
+                    <p className="text-xs text-gray-500">{p.codigo_del_equipo ? `Código: ${p.codigo_del_equipo}` : ''}{p.responsable ? ` · Responsable: ${p.responsable}` : ''}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={() => handleAprobar(n.id, 'aprobar')}
+                      className="text-xs px-3 py-1 rounded-lg text-white font-medium bg-green-500 hover:bg-green-600">
+                      Aprobar
+                    </button>
+                    <button onClick={() => handleAprobar(n.id, 'rechazar')}
+                      className="text-xs px-3 py-1 rounded-lg text-white font-medium bg-red-500 hover:bg-red-600">
+                      Rechazar
+                    </button>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
       )}
 
       {equipos.length > 0 ? (

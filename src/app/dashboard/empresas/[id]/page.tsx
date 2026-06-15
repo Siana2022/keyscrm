@@ -30,6 +30,7 @@ export default async function EmpresaAdminPage({ params }: { params: Promise<{ i
     { data: empresaPlantillas },
     { data: todasPlantillas },
     { data: documentosManuales },
+    { data: notificacionesPendientes },
   ] = await Promise.all([
     supabase.from('empresas').select('*').eq('id', id).single(),
     supabase.from('dpos').select('id, nombre').order('nombre'),
@@ -47,6 +48,7 @@ export default async function EmpresaAdminPage({ params }: { params: Promise<{ i
       .eq('empresa_id', id),
     supabase.from('plantillas_documento').select('*').order('titulo'),
     supabase.from('documentos_manuales').select('*').eq('empresa_id', id).order('created_at', { ascending: false }),
+    supabase.from('notificaciones_solicitudes').select('*').eq('empresa_id', id).eq('estado', 'pendiente'),
   ])
 
   if (!empresa) notFound()
@@ -138,15 +140,27 @@ export default async function EmpresaAdminPage({ params }: { params: Promise<{ i
         {/* Columna derecha — Secciones */}
         <div className="space-y-3">
           <AdminSection title={`Empleados (${empleados?.length ?? 0})`}>
-            <EmpleadosAdmin empresaId={id} empleadosIniciales={empleados ?? []} />
+            <EmpleadosAdmin
+              empresaId={id}
+              empleadosIniciales={empleados ?? []}
+              notificaciones={(notificacionesPendientes ?? []).filter(n => n.tipo === 'alta_empleado' || n.tipo === 'baja_empleado')}
+            />
           </AdminSection>
 
           <AdminSection title={`Encargados de tratamiento (${encargadosVinculados?.length ?? 0})`}>
-            <EncargadosAdmin empresaId={id} encargadosIniciales={encargadosAdaptados} />
+            <EncargadosAdmin
+              empresaId={id}
+              encargadosIniciales={encargadosAdaptados}
+              notificaciones={(notificacionesPendientes ?? []).filter(n => n.tipo === 'alta_encargado' || n.tipo === 'baja_encargado' || n.tipo === 'alta_servicio_externo' || n.tipo === 'baja_servicio_externo')}
+            />
           </AdminSection>
 
           <AdminSection title={`Equipos (${equipos?.length ?? 0})`}>
-            <EquiposAdmin empresaId={id} equiposIniciales={equipos ?? []} />
+            <EquiposAdmin
+              empresaId={id}
+              equiposIniciales={equipos ?? []}
+              notificaciones={(notificacionesPendientes ?? []).filter(n => n.tipo === 'alta_equipo' || n.tipo === 'baja_equipo')}
+            />
           </AdminSection>
 
           <AdminSection title={`Revisiones y auditorías (${revisiones?.length ?? 0})`}>
