@@ -1,6 +1,7 @@
 import { createClient } from '@/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import LogoutButton from '@/components/layout/LogoutButton'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -32,23 +33,27 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <span className="font-bold text-gray-900">Keys Safe</span>
-            <nav className="flex gap-1 items-center">
+      <header style={{ backgroundColor: '#111111' }}>
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-10">
+            <Link href="/dashboard">
+              <Image src="/keys/logo.png" alt="Keys Safe" width={36} height={36} className="object-contain" />
+            </Link>
+            <nav className="flex items-center gap-1">
               {nav.map(item => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="px-3 py-1.5 text-sm text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors"
+                  className="px-4 py-2 text-white font-bold hover:opacity-70 transition-opacity"
+                  style={{ fontFamily: 'Avenir, "Century Gothic", sans-serif', fontSize: '16px' }}
                 >
                   {item.label}
                 </Link>
               ))}
               <Link
                 href="/dashboard/solicitudes"
-                className="relative px-3 py-1.5 text-sm text-gray-600 rounded-lg hover:bg-gray-100 hover:text-gray-900 transition-colors flex items-center gap-1.5"
+                className="px-4 py-2 text-white font-bold hover:opacity-70 transition-opacity flex items-center gap-2"
+                style={{ fontFamily: 'Avenir, "Century Gothic", sans-serif', fontSize: '16px' }}
               >
                 Solicitudes
                 {(pendientesCount ?? 0) > 0 && (
@@ -62,7 +67,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <LogoutButton />
         </div>
       </header>
-      <main className="w-full px-6 py-8">{children}</main>
+      <main className="max-w-7xl mx-auto px-6 py-8">{children}</main>
     </div>
   )
 }
