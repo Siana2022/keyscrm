@@ -11,6 +11,7 @@ import SeccionDocumentos from '@/components/empresa/SeccionDocumentos'
 import FormAltaEmpleado from '@/components/empresa/FormAltaEmpleado'
 import FormAltaEncargado from '@/components/empresa/FormAltaEncargado'
 import FormAltaEquipo from '@/components/empresa/FormAltaEquipo'
+import BotonAccion from '@/components/empresa/BotonAccion'
 
 export default async function EmpresaFichaPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -290,13 +291,3 @@ function FilaGuia({ guia, imgFallback }: { guia: { id: string; codigo: string; t
 }
 
 
-function BotonAccion({ label, empresaId, accion, small }: { label: string; empresaId: string; accion: string; small?: boolean }) {
-  return (
-    <button
-      className={`text-white font-bold rounded px-3 py-2 text-xs ${small ? '' : 'w-full'}`}
-      style={{ backgroundColor: '#FF2F92' }}
-    >
-      {label}
-    </button>
-  )
-}
