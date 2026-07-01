@@ -42,6 +42,7 @@ type EmpresaRow = {
   web_4: string | null
   lssi_datos_registrales: string | null
   grupo_de_empresas: string | null
+  logo_url: string | null
   nombre_data_manager: string | null
   apellidos_data_manager: string | null
   dni_data_manager: string | null

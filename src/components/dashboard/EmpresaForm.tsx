@@ -44,6 +44,7 @@ export default function EmpresaForm({
       lssi_datos_registrales: data.lssi_datos_registrales || null,
       grupo_de_empresas: data.grupo_de_empresas || null,
       dpo_id: data.dpo_id || null,
+      logo_url: data.logo_url || null,
     }
 
     const url = isEdit ? `/api/empresas/${empresa.id}` : '/api/empresas'
@@ -116,6 +117,9 @@ export default function EmpresaForm({
         </Field>
         <Field label="Página web" name="pagina_web">
           <input name="pagina_web" defaultValue={field('pagina_web')} className="input" />
+        </Field>
+        <Field label="Logo empresa (URL)" name="logo_url">
+          <input name="logo_url" type="url" defaultValue={field('logo_url')} className="input" placeholder="https://..." />
         </Field>
       </div>
 
