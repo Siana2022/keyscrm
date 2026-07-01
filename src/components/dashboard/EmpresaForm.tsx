@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
+import { createClient } from '@/supabase/client'
 import type { Database } from '@/types/database'
 
 type Empresa = Database['public']['Tables']['empresas']['Row']
@@ -17,7 +18,37 @@ export default function EmpresaForm({
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [logoPreview, setLogoPreview] = useState<string | null>(empresa?.logo_url ?? null)
+  const [uploadingLogo, setUploadingLogo] = useState(false)
+  const [logoUrl, setLogoUrl] = useState<string | null>(empresa?.logo_url ?? null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const isEdit = !!empresa
+
+  async function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadingLogo(true)
+    setError(null)
+
+    const supabase = createClient()
+    const ext = file.name.split('.').pop()
+    const path = `${empresa?.id ?? 'nueva'}-${Date.now()}.${ext}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('logos')
+      .upload(path, file, { upsert: true })
+
+    if (uploadError) {
+      setError('Error subiendo logo: ' + uploadError.message)
+      setUploadingLogo(false)
+      return
+    }
+
+    const { data: { publicUrl } } = supabase.storage.from('logos').getPublicUrl(path)
+    setLogoUrl(publicUrl)
+    setLogoPreview(publicUrl)
+    setUploadingLogo(false)
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -44,7 +75,7 @@ export default function EmpresaForm({
       lssi_datos_registrales: data.lssi_datos_registrales || null,
       grupo_de_empresas: data.grupo_de_empresas || null,
       dpo_id: data.dpo_id || null,
-      logo_url: data.logo_url || null,
+      logo_url: logoUrl || null,
     }
 
     const url = isEdit ? `/api/empresas/${empresa.id}` : '/api/empresas'
@@ -118,9 +149,40 @@ export default function EmpresaForm({
         <Field label="Página web" name="pagina_web">
           <input name="pagina_web" defaultValue={field('pagina_web')} className="input" />
         </Field>
-        <Field label="Logo empresa (URL)" name="logo_url">
-          <input name="logo_url" type="url" defaultValue={field('logo_url')} className="input" placeholder="https://..." />
-        </Field>
+        <div className="col-span-2">
+          <label className="block text-xs font-medium text-gray-600 mb-1">Logo empresa</label>
+          <div className="flex items-center gap-4">
+            {logoPreview && (
+              <img src={logoPreview} alt="Logo" className="h-12 object-contain rounded border border-gray-200 bg-gray-50 p-1" />
+            )}
+            <div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleLogoChange}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={uploadingLogo}
+                className="text-xs px-3 py-1.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 disabled:opacity-50"
+              >
+                {uploadingLogo ? 'Subiendo...' : logoPreview ? 'Cambiar logo' : 'Subir logo'}
+              </button>
+              {logoPreview && (
+                <button
+                  type="button"
+                  onClick={() => { setLogoUrl(null); setLogoPreview(null) }}
+                  className="ml-2 text-xs text-red-500 hover:text-red-700"
+                >
+                  Eliminar
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="border-t border-gray-100 pt-5">
