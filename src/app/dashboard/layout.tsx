@@ -33,13 +33,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header style={{ backgroundColor: '#111111' }}>
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-10">
-            <Link href="/dashboard">
-              <Image src="/keys/logo.png" alt="Keys Safe" width={36} height={36} className="object-contain" />
-            </Link>
-            <nav className="flex items-center gap-1">
+      <header style={{ backgroundColor: '#111111' }} className="relative">
+        <div className="max-w-screen-2xl mx-auto px-6 h-16 flex items-center justify-between">
+          <Link href="/dashboard">
+            <Image src="/keys/logo.png" alt="Keys Safe" width={36} height={36} className="object-contain" />
+          </Link>
+          <nav className="flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
               {nav.map(item => (
                 <Link
                   key={item.href}
@@ -63,11 +62,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
                 )}
               </Link>
             </nav>
-          </div>
           <LogoutButton />
         </div>
       </header>
-      <main className="max-w-7xl mx-auto px-6 py-8">{children}</main>
+      <main className="max-w-screen-2xl mx-auto px-6 py-8">{children}</main>
     </div>
   )
 }
